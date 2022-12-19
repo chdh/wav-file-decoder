@@ -1,0 +1,23 @@
+{
+   "compilerOptions": {
+      "allowUnreachableCode": false,
+      "alwaysStrict": true,
+      "baseUrl": "src",
+      "lib": ["ES6"],
+      "module": "node16",
+      "moduleResolution": "node16",
+      "noFallthroughCasesInSwitch": true,
+      "noImplicitAny": true,
+      "noImplicitOverride": true,
+      "noImplicitReturns": true,
+      "noImplicitThis": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "outDir": "tempBuild",
+      "removeComments": true,
+      "rootDir": "src",
+      "strictFunctionTypes": true,
+      "strictNullChecks": true,
+      "target": "ES2022"
+   }
+}

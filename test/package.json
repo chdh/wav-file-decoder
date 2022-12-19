@@ -1,0 +1,11 @@
+{
+   "private": true,
+   "type": "module",
+   "dependencies": {
+      "wav-file-decoder": "file:..",
+      "wav-file-encoder": "^1.0.4"
+   },
+   "devDependencies": {
+      "@types/node": "^18.0.0"
+   }
+}
