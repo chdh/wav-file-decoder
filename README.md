@@ -39,7 +39,7 @@ interface DecodedWavFile {
   channelData:      Float32Array[]; // arrays containing the audio samples (PCM data), one array per channel
   sampleRate:       number;         // sample rate (samples per second)
   numberOfChannels: number;         // number of channels, same as channelData.length
-  wavFileType:      WavFileType;    // type of WAV file
+  wavFileType:      WavFileType;    // `WavFileType.int16` (0) for 16 bit signed integer, `WavFileType.float32` (1) for 32 bit float
   bitsPerSample:    number;         // number of bits per sample in the WAV file
 }
 ```
