@@ -1,6 +1,6 @@
 {
    "name": "wav-file-decoder",
-   "version": "1.0.0",
+   "version": "1.0.1",
    "description": "A simple decoder for WAV audio files",
    "types": "dist/WavFileDecoder.d.ts",
    "main": "dist/WavFileDecoder.js",

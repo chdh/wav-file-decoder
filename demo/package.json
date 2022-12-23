@@ -1,0 +1,10 @@
+{
+   "private": true,
+   "dependencies": {
+      "function-curve-viewer": "^1.0.30",
+      "wav-file-decoder": "file:.."
+   },
+   "scripts": {
+      "build": "tsc && rollup -c"
+   }
+}

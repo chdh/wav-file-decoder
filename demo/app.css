@@ -1,0 +1,34 @@
+body {
+   font-family: Arial, sans-serif;
+   font-size: 14px; }
+
+.hidden {
+   display: none; }
+
+#signalViewerCanvas {
+   display: block;
+   width: 800px;
+   height: 150px;
+   border: 1px solid #888;
+   margin-top: 5px;
+   outline: none;
+   touch-action: none; }
+
+div.actionButtons {
+   display: flex;
+   align-items: center;
+   margin-top: 20px; }
+
+div.actionButtons button {
+   width: 110px;
+   padding: 4px 0px;
+   margin-right: 20px; }
+
+#msg {
+   margin-top: 20px; }
+
+.footer {
+   border-top: 1px solid #888;
+   padding-top: 10px;
+   width: 800px;
+   margin-top: 20px; }

@@ -13,12 +13,14 @@ export function isWavFile (fileData: ArrayBufferView | ArrayBuffer) : boolean {
 export const enum WavFileType {
    int16,                                                  // 16 bit signed integer
    float32 }                                               // 32 bit float within the range -1 to +1
+const wavFileTypeNames = ["int16", "float32"];
 
 export interface DecodedWavFile {
    channelData:              Float32Array[];               // arrays containing the audio samples (PCM data), one array per channel
    sampleRate:               number;                       // sample rate (samples per second)
    numberOfChannels:         number;                       // number of channels, same as channelData.length
-   wavFileType:              WavFileType;                  // type of WAV file
+   wavFileType:              WavFileType;                  // type of WAV file as enum
+   wavFileTypeName:          string;                       // type of WAV file as string
    bitsPerSample:            number; }                     // number of bits per sample in the WAV file
 
 export function decodeWavFile (fileData: ArrayBufferView | ArrayBuffer) : DecodedWavFile {
@@ -26,9 +28,10 @@ export function decodeWavFile (fileData: ArrayBufferView | ArrayBuffer) : Decode
    const fmt = decodeFormatChunk(chunks.get("fmt"));
    const data = chunks.get("data");
    const wavFileType = getWavFileType(fmt);
+   const wavFileTypeName = wavFileTypeNames[wavFileType];
    verifyDataChunkLength(data, fmt);
    const channelData = decodeDataChunk(data!, fmt, wavFileType);
-   return {channelData, sampleRate: fmt.sampleRate, numberOfChannels: fmt.numberOfChannels, wavFileType, bitsPerSample: fmt.bitsPerSample}; }
+   return {channelData, sampleRate: fmt.sampleRate, numberOfChannels: fmt.numberOfChannels, wavFileType, wavFileTypeName, bitsPerSample: fmt.bitsPerSample}; }
 
 function unpackWavFileChunks (fileData: ArrayBufferView | ArrayBuffer) : Map<string, DataView> {
    let dataView: DataView;

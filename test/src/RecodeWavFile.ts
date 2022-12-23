@@ -7,7 +7,7 @@ function recodeWavFile (inputFileName: string, outputFileName: string) {
    if (!WavFileDecoder.isWavFile(inputFileData)) {
       console.log("Not a valid WAV file."); }
    const d = WavFileDecoder.decodeWavFile(inputFileData);
-   console.log(`type=${d.wavFileType}, sampleRate=${d.sampleRate}, channels=${d.channelData.length}, samples=${d.channelData[0].length}`);
+   console.log(`type=${d.wavFileTypeName}, sampleRate=${d.sampleRate}, channels=${d.channelData.length}, samples=${d.channelData[0].length}`);
    const outputFileData = WavFileEncoder.encodeWavFileFromArrays(d.channelData, d.sampleRate, <any>d.wavFileType);
    Fs.writeFileSync(outputFileName, Buffer.from(outputFileData)); }
 
