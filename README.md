@@ -41,12 +41,13 @@ interface DecodedWavFile {
   sampleRate:       number;         // sample rate (samples per second)
   numberOfChannels: number;         // number of channels, same as channelData.length
   wavFileType:      WavFileType;    // type of WAV file as enum (see below)
-  wavFileTypeName:  string;         // type of WAV file as string ("int16" or "float32")
+  wavFileTypeName:  string;         // type of WAV file as string ("int16", "int24" or "float32")
   bitsPerSample:    number;         // number of bits per sample in the WAV file
 }
 enum WavFileType {
   int16,                            // 0 = 16 bit signed integer
-  float32                           // 1 = 32 bit float within the range -1 to +1
+  int24                             // 2 = 24 bit signed integer
+  float32,                          // 1 = 32 bit float within the range -1 to +1
 }
 ```
 

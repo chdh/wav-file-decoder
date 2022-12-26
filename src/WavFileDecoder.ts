@@ -11,9 +11,9 @@ export function isWavFile (fileData: ArrayBufferView | ArrayBuffer) : boolean {
       return false; }}
 
 export const enum WavFileType {
-   int16,                                                  // 16 bit signed integer
-   float32,                                                // 32 bit float within the range -1 to +1
-   int24 }                                                 // 24 bit signed integer
+   int16   = 0,                                            // 16 bit signed integer
+   int24   = 2,                                            // 24 bit signed integer
+   float32 = 1 }                                           // 32 bit float within the range -1 to +1
 const wavFileTypeNames = ["int16", "float32", "int24"];
 
 export interface DecodedWavFile {
