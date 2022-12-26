@@ -37,6 +37,7 @@ async function loadWavFile (file: File) {
    refreshGui(); }
 
 function loadButton_click() {
+   audioPlayer.stop();
    signalValid = false;
    setMsg("");
    refreshGui();

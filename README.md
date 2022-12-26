@@ -50,5 +50,5 @@ enum WavFileType {
 }
 ```
 
-The audio sample values within the `channelData` arrays are within the range -1 to +1.<br>
+The audio sample values in the `channelData` arrays are within the range -1 to +1.<br>
 An exception is thrown when the passed file is not a WAV file or when the format of the WAV file is not supported.

@@ -29,8 +29,7 @@ export default class InternalAudioPlayer extends EventTarget {
       this.fireEvent("stateChange"); }
 
    public async playSamples (samples: ArrayLike<number>, sampleRate: number) {
-      this.init();
-      const buffer = this.audioContext.createBuffer(1, samples.length, sampleRate);
+      const buffer = new AudioBuffer({length: samples.length, sampleRate});
       const data = buffer.getChannelData(0);
       for (let i = 0; i < samples.length; i++) {
          data[i] = samples[i]; }

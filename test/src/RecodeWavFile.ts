@@ -2,13 +2,19 @@ import * as WavFileDecoder from "wav-file-decoder";
 import * as WavFileEncoder from "wav-file-encoder";
 import * as Fs from "fs";
 
+function mapFileType (wavFileType: WavFileDecoder.WavFileType) : WavFileEncoder.WavFileType {
+   switch (wavFileType) {
+      case WavFileDecoder.WavFileType.int16:   return WavFileEncoder.WavFileType.int16;
+      case WavFileDecoder.WavFileType.float32: return WavFileEncoder.WavFileType.float32;
+      default:                                 return WavFileEncoder.WavFileType.float32; }}
+
 function recodeWavFile (inputFileName: string, outputFileName: string) {
    const inputFileData = Fs.readFileSync(inputFileName);
    if (!WavFileDecoder.isWavFile(inputFileData)) {
-      console.log("Not a valid WAV file."); }
+      console.log("Not a valid and supported WAV file."); }
    const d = WavFileDecoder.decodeWavFile(inputFileData);
    console.log(`type=${d.wavFileTypeName}, sampleRate=${d.sampleRate}, channels=${d.channelData.length}, samples=${d.channelData[0].length}`);
-   const outputFileData = WavFileEncoder.encodeWavFileFromArrays(d.channelData, d.sampleRate, <any>d.wavFileType);
+   const outputFileData = WavFileEncoder.encodeWavFileFromArrays(d.channelData, d.sampleRate, mapFileType(d.wavFileType));
    Fs.writeFileSync(outputFileName, Buffer.from(outputFileData)); }
 
 function main() {

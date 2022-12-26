@@ -12,8 +12,9 @@ export function isWavFile (fileData: ArrayBufferView | ArrayBuffer) : boolean {
 
 export const enum WavFileType {
    int16,                                                  // 16 bit signed integer
-   float32 }                                               // 32 bit float within the range -1 to +1
-const wavFileTypeNames = ["int16", "float32"];
+   float32,                                                // 32 bit float within the range -1 to +1
+   int24 }                                                 // 24 bit signed integer
+const wavFileTypeNames = ["int16", "float32", "int24"];
 
 export interface DecodedWavFile {
    channelData:              Float32Array[];               // arrays containing the audio samples (PCM data), one array per channel
@@ -60,12 +61,18 @@ function unpackWavFileChunks (fileData: ArrayBufferView | ArrayBuffer) : Map<str
          throw new Error(`Incomplete chunk data in WAV file at offset ${fileOffset}.`); }
       const chunkData = new DataView(dataView.buffer, dataView.byteOffset + fileOffset + 8, chunkLength);
       chunks.set(chunkId, chunkData);
-      fileOffset += 8 + chunkLength; }
+      const padLength = (chunkLength % 2);
+      fileOffset += 8 + chunkLength + padLength; }
    return chunks; }
 
 function getString (dataView: DataView, offset: number, length: number) : string {
    const a = new Uint8Array(dataView.buffer, dataView.byteOffset + offset, length);
    return <string>String.fromCharCode.apply(null, a); }
+
+function getInt24 (dataView: DataView, offset: number) : number {
+   const b0 = dataView.getInt8(offset + 2) * 0x10000;
+   const b12 = dataView.getUint16(offset, true);
+   return b0 + b12; }
 
 //--- Format chunk -------------------------------------------------------------
 
@@ -100,6 +107,8 @@ function getWavFileType (fmt: FormatChunk) : WavFileType {
    const expectedBytesPerFrame = fmt.numberOfChannels * bytesPerSample;
    if (fmt.formatCode == 1 && fmt.bitsPerSample == 16 && fmt.bytesPerFrame == expectedBytesPerFrame) {
       return WavFileType.int16; }
+   if (fmt.formatCode == 1 && fmt.bitsPerSample == 24 && fmt.bytesPerFrame == expectedBytesPerFrame) {
+      return WavFileType.int24; }
    if (fmt.formatCode == 3 && fmt.bitsPerSample == 32 && fmt.bytesPerFrame == expectedBytesPerFrame) {
       return WavFileType.float32; }
    throw new Error(`Unsupported WAV file type, formatCode=${fmt.formatCode}, bitsPerSample=${fmt.bitsPerSample}, bytesPerFrame=${fmt.bytesPerFrame}, numberOfChannels=${fmt.numberOfChannels}.`); }
@@ -107,6 +116,7 @@ function getWavFileType (fmt: FormatChunk) : WavFileType {
 function decodeDataChunk (data: DataView, fmt: FormatChunk, wavFileType: WavFileType) : Float32Array[] {
    switch (wavFileType) {
       case WavFileType.int16:    return decodeDataChunk_int16(data, fmt);
+      case WavFileType.int24:    return decodeDataChunk_int24(data, fmt);
       case WavFileType.float32:  return decodeDataChunk_float32(data, fmt);
       default:                   throw new Error("No decoder."); }}
 
@@ -121,6 +131,19 @@ function decodeDataChunk_int16 (data: DataView, fmt: FormatChunk) : Float32Array
          const sampleValueFloat = convertInt16SampleToFloat(sampleValueInt16);
          channelData[channelNo][frameNo] = sampleValueFloat;
          offs += 2; }}
+   return channelData; }
+
+function decodeDataChunk_int24 (data: DataView, fmt: FormatChunk) : Float32Array[] {
+   const channelData = allocateChannelDataArrays(data.byteLength, fmt);
+   const numberOfChannels = fmt.numberOfChannels;
+   const numberOfFrames = channelData[0].length;
+   let offs = 0;
+   for (let frameNo = 0; frameNo < numberOfFrames; frameNo++) {
+      for (let channelNo = 0; channelNo < numberOfChannels; channelNo++) {
+         const sampleValueInt24 = getInt24(data, offs);
+         const sampleValueFloat = convertInt24SampleToFloat(sampleValueInt24);
+         channelData[channelNo][frameNo] = sampleValueFloat;
+         offs += 3; }}
    return channelData; }
 
 function decodeDataChunk_float32 (data: DataView, fmt: FormatChunk) : Float32Array[] {
@@ -138,7 +161,10 @@ function decodeDataChunk_float32 (data: DataView, fmt: FormatChunk) : Float32Arr
 // Converts integers in the range [-32768 .. 32767] to float in the range [-1 .. 0.99997].
 // See discussion for convertFloatSampleToInt16() in wav-file-encoder package.
 function convertInt16SampleToFloat (i: number) : number {
-   return i / 32768; }                                     // symetric for negative and positive values and preserving bit pattern
+   return i / 0x8000; }                                    // symetric for negative and positive values and preserving bit pattern
+
+function convertInt24SampleToFloat (i: number) : number {
+   return i / 0x800000; }                                  // symetric for negative and positive values and preserving bit pattern
 
 function allocateChannelDataArrays (dataLength: number, fmt: FormatChunk) : Float32Array[] {
    const numberOfFrames = Math.floor(dataLength / fmt.bytesPerFrame);
