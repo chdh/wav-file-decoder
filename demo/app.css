@@ -1,9 +1,20 @@
-body {
-   font-family: Arial, sans-serif;
-   font-size: 14px; }
+* {
+   box-sizing: inherit; }
+
+html {
+   font-size: 14px;
+   box-sizing: border-box; }
+
+body, button, input, select, textarea {
+   font-size: inherit;
+   font-family: Arial, sans-serif; }
 
 .hidden {
    display: none; }
+
+#msg.highlight {
+   background-color: #ffc;
+   padding: 4px; }
 
 #signalViewerCanvas {
    display: block;
@@ -25,7 +36,8 @@ div.actionButtons button {
    margin-right: 20px; }
 
 #msg {
-   margin-top: 20px; }
+   margin-top: 20px;
+   width: 800px; }
 
 .footer {
    border-top: 1px solid #888;

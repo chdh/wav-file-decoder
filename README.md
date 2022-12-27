@@ -25,7 +25,7 @@ function isWavFile (fileData: ArrayBufferView | ArrayBuffer) : boolean
 ### Decode a WAV file
 
 ```typescript
-function decodeWavFile (fileData: ArrayBufferView | ArrayBuffer) : DecodedWavFile
+function decodeWavFile (fileData: ArrayBufferView | ArrayBuffer) : AudioData
 ```
 
 * `fileData`: An `ArrayBufferView`
@@ -36,18 +36,17 @@ function decodeWavFile (fileData: ArrayBufferView | ArrayBuffer) : DecodedWavFil
 * Return value: A data structure containing the decoded WAV file data.
 
 ```typescript
-interface DecodedWavFile {
+interface AudioData {
   channelData:      Float32Array[]; // arrays containing the audio samples (PCM data), one array per channel
   sampleRate:       number;         // sample rate (samples per second)
   numberOfChannels: number;         // number of channels, same as channelData.length
-  wavFileType:      WavFileType;    // type of WAV file as enum (see below)
-  wavFileTypeName:  string;         // type of WAV file as string ("int16", "int24" or "float32")
+  audioEncoding:    AudioEncoding;  // audio encoding in the WAV file (int or float)
   bitsPerSample:    number;         // number of bits per sample in the WAV file
+  wavFileTypeName:  string;         // combination of audioEncoding and bitsPerSample, e.g. "int16" or "float32"
 }
-enum WavFileType {
-  int16,                            // 0 = 16 bit signed integer
-  int24                             // 2 = 24 bit signed integer
-  float32,                          // 1 = 32 bit float within the range -1 to +1
+enum AudioEncoding {
+  pcmInt,                           // 0 = PCM integer
+  pcmFloat                          // 1 = PCM float
 }
 ```
 

@@ -3,10 +3,11 @@ const dummyResolvedPromise = Promise.resolve();
 export function nextTick (callback: () => void) {
    void dummyResolvedPromise.then(callback); }
 
-export function setMsg (msg: string) {
+export function setMsg (msg: string, highlight = false) {
    const msgElement = document.getElementById("msg")!;
    msgElement.textContent = msg;
-   msgElement.classList.toggle("hidden", !msg); }
+   msgElement.classList.toggle("hidden", !msg);
+   msgElement.classList.toggle("highlight", highlight); }
 
 export function catchError (f: Function, ...args: any[]) {
    void catchErrorAsync(f, ...args); }
@@ -18,7 +19,7 @@ async function catchErrorAsync (f: Function, ...args: any[]) {
          await r; }}
     catch (error) {
       console.log(error);
-      setMsg(String(error)); }}
+      setMsg(String(error), true); }}
 
 export function openFileOpenDialog (callback: (file: File) => void) {
    if ((<any>window).showOpenFilePicker) {
